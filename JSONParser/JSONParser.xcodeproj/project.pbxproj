@@ -14,6 +14,8 @@
 		226310AD21007D810054F27D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 226310AB21007D810054F27D /* LaunchScreen.storyboard */; };
 		226310B821007D810054F27D /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226310B721007D810054F27D /* JSONParserTests.swift */; };
 		226310C321007D810054F27D /* JSONParserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226310C221007D810054F27D /* JSONParserUITests.swift */; };
+		226310D6210084FF0054F27D /* Paser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226310D5210084FF0054F27D /* Paser.swift */; };
+		226310D721008ED10054F27D /* Paser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226310D5210084FF0054F27D /* Paser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,7 @@
 		226310BE21007D810054F27D /* JSONParserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JSONParserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		226310C221007D810054F27D /* JSONParserUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParserUITests.swift; sourceTree = "<group>"; };
 		226310C421007D810054F27D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		226310D5210084FF0054F27D /* Paser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +100,7 @@
 		226310A121007D7F0054F27D /* JSONParser */ = {
 			isa = PBXGroup;
 			children = (
+				226310D0210080B70054F27D /* Parser */,
 				226310A221007D7F0054F27D /* AppDelegate.swift */,
 				226310A421007D7F0054F27D /* ViewController.swift */,
 				226310A621007D7F0054F27D /* Main.storyboard */,
@@ -123,6 +127,14 @@
 				226310C421007D810054F27D /* Info.plist */,
 			);
 			path = JSONParserUITests;
+			sourceTree = "<group>";
+		};
+		226310D0210080B70054F27D /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				226310D5210084FF0054F27D /* Paser.swift */,
+			);
+			path = Parser;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				226310A521007D7F0054F27D /* ViewController.swift in Sources */,
+				226310D6210084FF0054F27D /* Paser.swift in Sources */,
 				226310A321007D7F0054F27D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				226310B821007D810054F27D /* JSONParserTests.swift in Sources */,
+				226310D721008ED10054F27D /* Paser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

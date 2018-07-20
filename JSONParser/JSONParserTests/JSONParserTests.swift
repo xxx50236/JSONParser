@@ -11,26 +11,31 @@ import XCTest
 
 class JSONParserTests: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testParseNULL() {
+        let json = JSON("null")
+        
+        XCTAssert(json.type == .null)
+        XCTAssertNil(json.error)
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testParseExpectValue() {
+        let json1 = JSON("")
+        XCTAssert(json1.error == .expectValue)
+        
+        let json2 = JSON(" ")
+        XCTAssert(json2.error == .expectValue)
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testParseInvalidValue() {
+        let json1 = JSON("nul")
+        XCTAssert(json1.error == .invalidValue)
+    
+        let json2 = JSON("?")
+        XCTAssert(json2.error == .invalidValue)
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testParseRootNotSingular() {
+        let json1 = JSON("null x")
+        XCTAssert(json1.error == .rootNotSingular)
     }
-    
 }
