@@ -76,7 +76,7 @@ struct JSON {
             switch seperateValue.first! {
             case "null":
                 _type = .null
-            case "fasle", "true":
+            case "false", "true":
                 _type = .bool
             default:
                 _type = .unknown

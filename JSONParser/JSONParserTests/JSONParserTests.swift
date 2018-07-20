@@ -35,7 +35,15 @@ class JSONParserTests: XCTestCase {
     }
     
     func testParseRootNotSingular() {
-        let json1 = JSON("null x")
-        XCTAssert(json1.error == .rootNotSingular)
+        let json = JSON("null x")
+        XCTAssert(json.error == .rootNotSingular)
+    }
+    
+    func testParseBoolean() {
+        let jsonTrue = JSON("true")
+        XCTAssert(jsonTrue.type == .bool)
+        
+        let jsonFalse = JSON("false")
+        XCTAssert(jsonFalse.type == .bool)
     }
 }
