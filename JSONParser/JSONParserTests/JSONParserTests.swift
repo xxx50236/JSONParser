@@ -12,38 +12,44 @@ import XCTest
 class JSONParserTests: XCTestCase {
     
     func testParseNULL() {
-        let json = JSON("null")
         
-        XCTAssert(json.type == .null)
-        XCTAssertNil(json.error)
+        let nullStr = "null"
+        
+        expect(nullStr, shouldBe: .null)
+        parse(nullStr, shouldBe: nil)
     }
     
     func testParseExpectValue() {
-        let json1 = JSON("")
-        XCTAssert(json1.error == .expectValue)
-        
-        let json2 = JSON(" ")
-        XCTAssert(json2.error == .expectValue)
+        parse("", shouldBe: .expectValue)
+        parse(" ", shouldBe: .expectValue)
     }
     
     func testParseInvalidValue() {
-        let json1 = JSON("nul")
-        XCTAssert(json1.error == .invalidValue)
-    
-        let json2 = JSON("?")
-        XCTAssert(json2.error == .invalidValue)
+        parse("nul", shouldBe: .invalidValue)
+        parse("?", shouldBe: .invalidValue)
     }
     
     func testParseRootNotSingular() {
-        let json = JSON("null x")
-        XCTAssert(json.error == .rootNotSingular)
+        parse("null x", shouldBe: .rootNotSingular)
     }
     
     func testParseBoolean() {
-        let jsonTrue = JSON("true")
-        XCTAssert(jsonTrue.type == .bool)
+        let trueStr = "true"
+        expect(trueStr, shouldBe: .bool)
+        parse(trueStr, shouldBe: nil)
         
-        let jsonFalse = JSON("false")
-        XCTAssert(jsonFalse.type == .bool)
+        let falseStr = "false"
+        expect(falseStr, shouldBe: .bool)
+        parse(falseStr, shouldBe: nil)
+    }
+    
+    func expect(_ jsonString: String, shouldBe type: JSONType) {
+        let json = JSON(jsonString)
+        XCTAssert(json.type == type)
+    }
+    
+    func parse(_ jsonString: String, shouldBe error: JSONError?) {
+        let json = JSON(jsonString)
+        XCTAssert(json.error == error)
     }
 }
