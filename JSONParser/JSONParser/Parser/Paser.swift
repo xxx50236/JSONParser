@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 /*
  JSON Syntax:
@@ -14,7 +15,7 @@ import Foundation
     JSON-text = ws value ws
  
     ws = *(%x20 / %x09 / %x0A / %x0D)
-    value = null / false / true
+    value = null / false / true / number
     null  = "null"
     false = "false"
     true  = "true"
@@ -48,7 +49,24 @@ struct JSON {
         return _error
     }
     
+    var number: Double? {
+        guard _type == .number else {
+            return nil
+        }
+        return _rawNumber
+    }
+    
+    var bool: Bool? {
+        guard _type == .bool else {
+            return nil
+        }
+        return _rawBool
+    }
+    
     private let _rawValue: String
+    private var _rawNumber: Double?
+    private var _rawBool: Bool?
+    
     private var _error: JSONError? = nil
     
     init(_ jsonString: String) {
@@ -62,28 +80,108 @@ struct JSON {
             return .expectValue
         }
         
-        var parseError: JSONError?
         let characterSet = CharacterSet.controlCharacters.union(.whitespacesAndNewlines)
         let seperateValue = _rawValue
             .components(separatedBy: characterSet)
             .filter { !$0.isEmpty }
         
         if seperateValue.isEmpty {
-            parseError = .expectValue
+            return .expectValue
         } else if seperateValue.count > 1 {
-            parseError = .rootNotSingular
+            return .rootNotSingular
+        }
+
+        return parseValue(_rawValue)
+    }
+}
+
+extension JSON {
+    private mutating func parseValue(_ value: String) -> JSONError? {
+        
+        var parseError: JSONError?
+        
+        if value == "null" {
+            _type = .null
+        } else if value == "false" || value == "true" {
+            _type = .bool
+            _rawBool = value == "true"
+        } else if String(value.first!).rangeOfCharacter(from: CharacterSet(charactersIn: "-0123456789")) != nil {
+            
+            parseError = parseNumber(value)
         } else {
-            switch seperateValue.first! {
-            case "null":
-                _type = .null
-            case "false", "true":
-                _type = .bool
-            default:
-                _type = .unknown
-                parseError = .invalidValue
-            }
+            _type = .unknown
+            parseError = .invalidValue
         }
         
         return parseError
+    }
+}
+
+extension JSON {
+    private mutating func parseNumber(_ value: String) -> JSONError? {
+        
+        var parseError: JSONError?
+        let numberArray = Array(value)
+        var startIndex: Int = 0
+        
+        if let number = numberArray[safe: startIndex], number == "-" {
+            startIndex += 1
+        }
+        
+        if let number = numberArray[safe: startIndex], number == "0" {
+            startIndex += 1
+        } else if let number = numberArray[safe: startIndex], isDigit1to9(number) {
+            startIndex += 1
+            while let anotherNumber = numberArray[safe: startIndex], isDigit(anotherNumber) {
+                startIndex += 1
+            }
+        } else {
+            parseError = .invalidValue
+        }
+        
+        if let number = numberArray[safe: startIndex], number == "." {
+            startIndex += 1
+            parseError = passDigit(numberArray: numberArray, startIndex: &startIndex)
+        }
+        
+        if let number = numberArray[safe: startIndex], number == "e" || number == "E" {
+            startIndex += 1
+            
+            if let number = numberArray[safe: startIndex], number == "+" || number == "-" {
+                startIndex += 1
+            }
+            parseError = passDigit(numberArray: numberArray, startIndex: &startIndex)
+        }
+        
+        if startIndex != numberArray.count {
+            parseError = .rootNotSingular
+        } else if let decimalNumber = Double(_rawValue) {
+            _type = .number
+            _rawNumber = decimalNumber
+        } else {
+            parseError = .invalidValue
+        }
+        
+        return parseError
+    }
+    
+    private func passDigit(numberArray: [Character], startIndex: inout Int) -> JSONError? {
+        if let anotherNumber = numberArray[safe: startIndex], isDigit(anotherNumber) {
+            while let anotherNumber = numberArray[safe: startIndex], isDigit(anotherNumber) {
+                startIndex += 1
+            }
+        } else {
+            return .invalidValue
+        }
+        
+        return nil
+    }
+    
+    private func isDigit1to9(_ ch: Character) -> Bool {
+        return ch >= "1" && ch <= "9"
+    }
+    
+    private func isDigit(_ ch: Character) -> Bool {
+        return ch >= "0" && ch <= "9"
     }
 }
