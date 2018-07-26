@@ -92,6 +92,16 @@ class JSONParserTests: XCTestCase {
         //parseNumber("1e-10000", shouldBe: 0.0)
     }
     
+    func testParseString() {
+        parseString("\"\"", shouldBe: "")
+        parseString("\"Hello\"", shouldBe: "Hello")
+    }
+    
+    func testParseStringMissingQuotationMark() {
+        parse("\"", shouldBe: .missQuotationMark)
+        parse("\"abc", shouldBe: .missQuotationMark)
+    }
+    
     func expect(_ jsonString: String, shouldBe type: JSONType) {
         let json = JSON(jsonString)
         XCTAssert(json.type == type)
@@ -106,5 +116,11 @@ class JSONParserTests: XCTestCase {
         let json = JSON(jsonString)
         parse(jsonString, shouldBe: nil)
         XCTAssert(json.number == number, "\(jsonString) != \(number))")
+    }
+    
+    func parseString(_ jsonString: String, shouldBe string: String) {
+        let json = JSON(jsonString)
+        parse(jsonString, shouldBe: nil)
+        XCTAssert(json.string == string, "\(jsonString) can't be parsed to \(string)")
     }
 }

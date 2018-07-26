@@ -36,6 +36,9 @@ enum JSONError: Error {
     case expectValue
     case invalidValue
     case rootNotSingular
+    case missQuotationMark
+//    case invalidStringEscape
+//    case invalidStringCharacter
 }
 
 struct JSON {
@@ -63,9 +66,18 @@ struct JSON {
         return _rawBool
     }
     
+    var string: String? {
+        guard _type == .string else {
+            return nil
+        }
+        return _rawString
+    }
+    
     private let _rawValue: String
+    
     private var _rawNumber: Double?
     private var _rawBool: Bool?
+    private var _rawString: String?
     
     private var _error: JSONError? = nil
     
@@ -108,12 +120,27 @@ extension JSON {
         } else if String(value.first!).rangeOfCharacter(from: CharacterSet(charactersIn: "-0123456789")) != nil {
             
             parseError = parseNumber(value)
+        } else if value.first == "\"" {
+            parseError = parseString(value)
         } else {
             _type = .unknown
             parseError = .invalidValue
         }
         
         return parseError
+    }
+}
+
+extension JSON {
+    private mutating func parseString(_ value: String) -> JSONError? {
+        guard value.first == "\"" && value.last == "\"" && value.count > 1 else {
+            return .missQuotationMark
+        }
+        
+        let range = Range(NSRange(location: 1, length: value.count - 2), in: value)!
+        _type = .string
+        _rawString = String(value[range])
+        return nil
     }
 }
 
